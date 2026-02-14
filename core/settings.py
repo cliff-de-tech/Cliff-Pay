@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 load_dotenv()  # Reads the .env file
 
@@ -21,11 +22,11 @@ load_dotenv()  # Reads the .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Helper constants
-TRUTHY_VALUES = {'1', 'true', 't', 'yes', 'y', 'on'}
+TRUTHY_ENV_VALUES = {'1', 'true', 't', 'yes', 'y', 'on'}
 
 # --- SECURITY SETTINGS ---
 # DEBUG: Accept common truthy values
-DEBUG = os.environ.get('DEBUG', '').strip().lower() in TRUTHY_VALUES
+DEBUG = os.environ.get('DEBUG', '').strip().lower() in TRUTHY_ENV_VALUES
 
 # SECRET_KEY: Fail fast with clear error if missing, or use dev-only default
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -34,7 +35,6 @@ if not SECRET_KEY:
         # Development-only fallback
         SECRET_KEY = 'django-insecure-dev-key-change-this-in-production'
     else:
-        from django.core.exceptions import ImproperlyConfigured
         raise ImproperlyConfigured(
             'SECRET_KEY environment variable is required. '
             'Set it in your .env file or environment.'
