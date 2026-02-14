@@ -22,6 +22,7 @@ load_dotenv()  # Reads the .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Helper constants
+# Environment variables are normalized to lowercase before comparison
 TRUTHY_ENV_VALUES = {'1', 'true', 't', 'yes', 'y', 'on'}
 
 # --- SECURITY SETTINGS ---
@@ -53,7 +54,10 @@ elif DEBUG:
     ALLOWED_HOSTS = ['*']
 else:
     # In production, require ALLOWED_HOSTS to be explicitly set
-    ALLOWED_HOSTS = []
+    raise ImproperlyConfigured(
+        'ALLOWED_HOSTS environment variable is required in production. '
+        'Set it to a comma-separated list of allowed hosts in your .env file or environment.'
+    )
 # -----------------------------------------------
 
 INSTALLED_APPS = [
