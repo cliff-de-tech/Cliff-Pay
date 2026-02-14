@@ -21,6 +21,7 @@ load_dotenv()  # Reads the .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ copilot/sub-pr-1-again
 # Helper constants
 # Environment variables are normalized to lowercase before comparison
 TRUTHY_ENV_VALUES = {'1', 'true', 't', 'yes', 'y', 'on'}
@@ -58,6 +59,24 @@ else:
         'ALLOWED_HOSTS environment variable is required in production. '
         'Set it to a comma-separated list of allowed hosts in your .env file or environment.'
     )
+
+# This ensures DEBUG is True only if .env says so
+DEBUG = os.environ.get('DEBUG') == 'True'
+
+# --- REPLACE YOUR SECURITY SECTION WITH THIS ---
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:  # Catches both None and empty string
+    if DEBUG:
+        # Development-only fallback - NEVER use this in production
+        SECRET_KEY = 'django-insecure-dev-key-do-not-use-in-production'
+    else:
+        raise ImproperlyConfigured(
+            'SECRET_KEY environment variable is not set. '
+            'Please set SECRET_KEY in your environment or .env file.'
+        )
+
+ALLOWED_HOSTS = ['*'] 
+ feature/core-setup
 # -----------------------------------------------
 
 INSTALLED_APPS = [
