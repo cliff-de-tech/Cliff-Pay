@@ -20,11 +20,17 @@ load_dotenv()  # Reads the .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Helper constants
+TRUTHY_VALUES = {'1', 'true', 't', 'yes', 'y', 'on'}
+
 # --- SECURITY SETTINGS ---
+# DEBUG: Accept common truthy values
+DEBUG = os.environ.get('DEBUG', '').strip().lower() in TRUTHY_VALUES
+
 # SECRET_KEY: Fail fast with clear error if missing, or use dev-only default
 SECRET_KEY = os.environ.get('SECRET_KEY')
 if not SECRET_KEY:
-    if os.environ.get('DEBUG', '').strip().lower() in ('1', 'true', 't', 'yes', 'y', 'on'):
+    if DEBUG:
         # Development-only fallback
         SECRET_KEY = 'django-insecure-dev-key-change-this-in-production'
     else:
@@ -33,9 +39,6 @@ if not SECRET_KEY:
             'SECRET_KEY environment variable is required. '
             'Set it in your .env file or environment.'
         )
-
-# DEBUG: Accept common truthy values
-DEBUG = os.environ.get('DEBUG', '').strip().lower() in ('1', 'true', 't', 'yes', 'y', 'on')
 
 # ALLOWED_HOSTS: Load from environment with proper security defaults
 allowed_hosts_env = os.environ.get('ALLOWED_HOSTS')
