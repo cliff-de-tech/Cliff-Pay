@@ -20,13 +20,37 @@ load_dotenv()  # Reads the .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- REPLACE YOUR SECURITY SECTION WITH THIS ---
+# --- SECURITY SETTINGS ---
+# SECRET_KEY: Fail fast with clear error if missing, or use dev-only default
 SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if os.environ.get('DEBUG', '').strip().lower() in ('1', 'true', 't', 'yes', 'y', 'on'):
+        # Development-only fallback
+        SECRET_KEY = 'django-insecure-dev-key-change-this-in-production'
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            'SECRET_KEY environment variable is required. '
+            'Set it in your .env file or environment.'
+        )
 
-# This ensures DEBUG is True only if .env says so
-DEBUG = os.environ.get('DEBUG') == 'True'
+# DEBUG: Accept common truthy values
+DEBUG = os.environ.get('DEBUG', '').strip().lower() in ('1', 'true', 't', 'yes', 'y', 'on')
 
-ALLOWED_HOSTS = ['*'] 
+# ALLOWED_HOSTS: Load from environment with proper security defaults
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [
+        host.strip()
+        for host in allowed_hosts_env.split(',')
+        if host.strip()
+    ]
+elif DEBUG:
+    # In development, default to allowing all hosts
+    ALLOWED_HOSTS = ['*']
+else:
+    # In production, require ALLOWED_HOSTS to be explicitly set
+    ALLOWED_HOSTS = []
 # -----------------------------------------------
 
 INSTALLED_APPS = [
@@ -74,12 +98,23 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
+# Database configuration with proper fallback
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600
+        )
+    }
+else:
+    # Fallback to SQLite for development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
