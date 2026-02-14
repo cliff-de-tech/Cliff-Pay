@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database configuration with proper fallback
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        default=f'sqlite:///{(BASE_DIR / "db.sqlite3").as_posix()}',
         conn_max_age=600
     )
 }
