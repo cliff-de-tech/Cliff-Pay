@@ -26,7 +26,7 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 # --- REPLACE YOUR SECURITY SECTION WITH THIS ---
 SECRET_KEY = os.environ.get('SECRET_KEY')
-if not SECRET_KEY:
+if not SECRET_KEY:  # Catches both None and empty string
     if DEBUG:
         # Development-only fallback - NEVER use this in production
         SECRET_KEY = 'django-insecure-dev-key-do-not-use-in-production'
