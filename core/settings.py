@@ -6,6 +6,7 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 from django.core.exceptions import ImproperlyConfigured
+from datetime import timedelta
 
 # Load environment variables
 load_dotenv()
@@ -125,3 +126,17 @@ STATIC_URL = 'static/'
 
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Tell Django Rest Framework to use JWT for authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# Configure the token lifespans
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), # The VIP badge expires in 1 hour
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # They can get a new badge without logging in for 1 day
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
