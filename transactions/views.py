@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
+from django.db import models
 from .models import Transaction
 from .serializers import TransactionSerializer
 
@@ -31,3 +32,11 @@ class SendMoneyView(generics.CreateAPIView):
                 receiver=receiver,
                 status='COMPLETED'
             )
+class TransactionHistoryView(generics.ListAPIView):
+    serializer_class = TransactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # Get all transactions where the user is either the sender OR the receiver
+        return Transaction.objects.filter(models.Q(sender=user) | models.Q(receiver=user))            
