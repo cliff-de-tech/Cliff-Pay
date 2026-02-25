@@ -191,7 +191,25 @@ cliff-pay/
 
 ---
 
-## 👤 Author
+## � License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🛡️ Security
+
+Found a vulnerability? Please report it responsibly. See [SECURITY.md](SECURITY.md) for our security policy and reporting guidelines.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started, our coding standards, and the pull request process.
+
+---
+
+## �👤 Author
 
 **Clifford Opoku-Sarkodie** — *Backend Engineer & Creative Technologist*
 
